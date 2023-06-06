@@ -7,7 +7,10 @@ exports.auth = (req, res, next) => {
   try {
     //extract JWT token
     //PENDING : other ways to fetch token
-    const token = req.body.token || req.cookies.token;
+    const token =
+      req.body.token ||
+      req.cookies.token ||
+      req.header("Authorization").replace("Bearer ", "");
     console.log(token);
     if (!token) {
       return res.status(401).json({
@@ -18,6 +21,7 @@ exports.auth = (req, res, next) => {
 
     //verify the token
     try {
+      // in short we decrypt the token
       const payload = jwt.verify(token, process.env.JWT_SECRET);
       console.log("This is payloadd");
       console.log(payload);
